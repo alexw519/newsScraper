@@ -39,6 +39,10 @@ app.set("view engine", "handlebars");
 // require("./routes/apiRoutes")(app);
 // require("./routes/htmlRoutes")(app);
 
+app.get("/", function(request, response)
+{
+    response.render("index");
+})
 //Get Function To Scrape Data From Website
 app.get("/scrape", function(request, response)
 {
