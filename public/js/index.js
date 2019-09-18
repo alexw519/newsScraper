@@ -8,3 +8,11 @@
 
 //     })
 // })
+
+$("#scrapeButton").on("click", function(error, response)
+{
+    $.ajax({
+        method: "GET",
+        url: "/scrape"
+    })
+})

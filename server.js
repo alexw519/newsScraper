@@ -25,11 +25,11 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://heroku:alexander19@ds351
 mongoose.connect(MONGODB_URI, {useNewUrlParser: true});
 let databaseUrl = "scraper";
 var collections = ["scrapedData"];
-// var db = mongojs(databaseUrl, collections);
-// db.on("error",function(error)
-// {
-//     console.log("Database Error: " + error);
-// });
+var db = mongojs(databaseUrl, collections);
+db.on("error",function(error)
+{
+    console.log("Database Error: " + error);
+});
 
 //Setting Up Handlebars
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
@@ -43,24 +43,47 @@ app.get("/", function(request, response)
 {
     response.render("index");
 })
+
+app.get("/news", function(request, response)
+{
+    db.scrapedData.find({}, function(error, found)
+    {
+        if (error)
+            console.log(error)
+        else
+            response.json(found)
+    });
+});
+
 //Get Function To Scrape Data From Website
 app.get("/scrape", function(request, response)
 {
     //Uses axios to get data from the URL
-    // axios.get("https://old.reddit.com/r/news").then(function(response)
     axios.get("https://www.nytimes.com/section/world").then(function(response)
     {
         var $ = cherrio.load(response.data);
 
-        //Getting everything with a p tag and a class of "title"
-        $(".css-4jyr1y h2").each(function(i, element)
+        //This Div Name Changes (css-"")
+        $(".css-10wtrbd h2").each(function(i, element)
         {
             var result = {};
             result.title = $(this).text();
-            // result.link = $(this).attr("href");
+            result.link = $(element).children().attr("href");
             console.log(result);
             console.log("---------------------------------------");
 
+            db.scrapedData.insert
+            ({
+                title: result.title,
+                link: result.link
+            },
+            function(error, inserted)
+            {
+                if (error)
+                    console.log(error);
+                else   
+                    console.log(inserted);
+            })
             // db.scrapedData.insert
             // ({
             //     title: result.title,
@@ -84,7 +107,6 @@ app.get("/scrape", function(request, response)
             //     })
         })
     })
-    // response.send("Scrape Complete");
     response.render("index");
 
 })
