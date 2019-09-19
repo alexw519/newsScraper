@@ -1,18 +1,21 @@
-// $("#scrapeButton").on("click", function(error, response)
-// {
-//     $ajax({
-//         method: "GET"
-//         //,url: "/posts/" + thisId
-//     }).then(function(data)
-//     {
-
-//     })
-// })
-
-$("#scrapeButton").on("click", function(error, response)
+$(document).ready()
 {
-    $.ajax({
-        method: "GET",
-        url: "/scrape"
+    $(function()
+    {
+        //When Click, Scrapes The Selected Website
+        $("#scrapeButton").on("click", function(error, response)
+        {
+            event.preventDefault();
+            $.ajax("/scrape",
+            {
+                type: "GET"
+            }).then(function(data)
+            {
+                console.log("Scraped!");
+                location.href = "/";
+            })
+        })
+
+        //
     })
-})
+}

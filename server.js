@@ -51,7 +51,11 @@ app.get("/news", function(request, response)
         if (error)
             console.log(error)
         else
-            response.json(found)
+        {
+            var result =
+            {   articles: found   }
+            response.render("index", result);
+        }
     });
 });
 
@@ -84,6 +88,9 @@ app.get("/scrape", function(request, response)
                 else   
                     console.log(inserted);
             })
+
+            //Currently Removed Code
+            {
             // db.scrapedData.insert
             // ({
             //     title: result.title,
@@ -105,6 +112,7 @@ app.get("/scrape", function(request, response)
             //     {
             //         console.log(error);
             //     })
+            }
         })
     })
     response.render("index");
